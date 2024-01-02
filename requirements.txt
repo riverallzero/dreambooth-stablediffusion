@@ -111,3 +111,4 @@ wcwidth==0.2.10
 websockets==11.0.3
 xformers==0.0.22.post7
 zipp==3.17.0
+face_recognition
