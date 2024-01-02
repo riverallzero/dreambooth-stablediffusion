@@ -2,7 +2,7 @@ import gradio as gr
 from PIL import Image
 import json
 import subprocess
-
+import face_recognition
 import torch
 from torch import autocast
 from diffusers import StableDiffusionPipeline, DDIMScheduler
@@ -26,8 +26,14 @@ def dreambooth_stablediffusion(img_path_list, seed, num_samples, height, width, 
             if not os.path.exists(output_dir):
                 os.makedirs(output_dir)                
                     
-            img = Image.open(img_path)
-            img = img.resize((512, 512))
+            image = face_recognition.load_image_file(img_path)
+            face_locations = face_recognition.face_locations(image)
+
+            top, right, bottom, left = face_locations[0]
+
+            face_image = image[top:bottom, left:right]
+            face_image_array = Image.fromarray(face_image)
+            img = face_image_array.resize((512, 512))
             img.save(os.path.join(output_dir, f'{i}.{img_path.split(".")[-1]}'))
             print(f"- Resized {img_path}")
         except Exception as e:
